@@ -53,10 +53,7 @@ class Game:
         mouseX, mouseY = pygame.mouse.get_pos()
         columnIndex = int(mouseX / CELL_SIZE)
         rowIndex = int(mouseY / CELL_SIZE)
-        if self.map_[rowIndex][columnIndex] == False:
-            self.map_[rowIndex][columnIndex] = True
-        else:
-            self.map_[rowIndex][columnIndex] = False
+        self.map_[rowIndex][columnIndex] = True if self.map_[rowIndex][columnIndex] == False else False
         self.render()
 
     def gameLoop(self):
@@ -81,8 +78,6 @@ class Game:
                     color = BLUE
                 else: color = WHITE
                 pygame.draw.rect(self.screen_, color, pygame.Rect(j*CELL_SIZE, i*CELL_SIZE, CELL_SIZE - 2, CELL_SIZE - 2))
-
-
         pygame.display.flip()
 
     def showMainMenuText(self):
