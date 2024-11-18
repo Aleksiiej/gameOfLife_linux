@@ -8,12 +8,12 @@ class Game:
         pygame.init()
         self.screen_ = pygame.display.set_mode(SCREENSIZE)
         self.clock_ = pygame.time.Clock()
+        self.map_ = []
         self.initNewGame()
     
     def initNewGame(self):
-        self.cellGroup = pygame.sprite.Group()
-        prepareMap(self.cellGroup)
         self.running_ = True
+        self.map_ = prepareMap()
         self.render()
 
     def run(self):
@@ -28,11 +28,7 @@ class Game:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                         self.gameLoop()
                     elif event.type == pygame.MOUSEBUTTONDOWN:
-                        mouseX, mouseY = pygame.mouse.get_pos()
-                        for cell in self.cellGroup:
-                            if cell.rect.collidepoint(mouseX, mouseY):
-                                cell.changeStatus()
-                        self.render()
+                        self.handleMouseInput()
                     elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         sys.exit()
@@ -53,6 +49,16 @@ class Game:
             else:
                 pass
 
+    def handleMouseInput(self):
+        mouseX, mouseY = pygame.mouse.get_pos()
+        columnIndex = int(mouseX / CELL_SIZE)
+        rowIndex = int(mouseY / CELL_SIZE)
+        if self.map_[rowIndex][columnIndex] == False:
+            self.map_[rowIndex][columnIndex] = True
+        else:
+            self.map_[rowIndex][columnIndex] = False
+        self.render()
+
     def gameLoop(self):
         while self.running_:
             self.processInput()
@@ -64,11 +70,19 @@ class Game:
         pass
 
     def update(self):
-        self.cellGroup.update()
+        pass
 
     def render(self):
         self.screen_.fill(BLACK)
-        self.cellGroup.draw(self.screen_)
+        color = BLACK
+        for i in range(HEIGHT):
+            for j in range(WIDTH):
+                if self.map_[i][j] == False:
+                    color = BLUE
+                else: color = WHITE
+                pygame.draw.rect(self.screen_, color, pygame.Rect(j*CELL_SIZE, i*CELL_SIZE, CELL_SIZE - 2, CELL_SIZE - 2))
+
+
         pygame.display.flip()
 
     def showMainMenuText(self):
